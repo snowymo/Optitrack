@@ -28,6 +28,7 @@ FloatValue = struct.Struct( '<f' )
 DoubleValue = struct.Struct( '<d' )
 
 class NatNetClient:
+<<<<<<< HEAD
     def __init__( self, host="172.24.71.201" ):
         # Change this value to the IP address of the NatNet server.
         self.serverIPAddress = host
