@@ -17,6 +17,7 @@
 #
 # Uses the Python NatNetClient.py library to establish a connection (by creating a NatNetClient),
 # and receive data via a NatNet connection and decode it using the NatNetClient library.
+import argparse
 
 from NatNetClient import NatNetClient
 
@@ -31,14 +32,19 @@ def receiveNewFrame(frameNumber, markerSetCount, unlabeledMarkersCount, rigidBod
 def receiveRigidBodyFrame(id, position, rotation):
     print("Received frame for rigid body", id)
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', type=str, default="172.24.71.201", help='host to connect to')
 
-# This will create a new NatNet client
-streamingClient = NatNetClient()
+    args = parser.parse_args()
 
-# Configure the streaming client to call our rigid body handler on the emulator to send data out.
-streamingClient.newFrameListener = receiveNewFrame
-streamingClient.rigidBodyListener = receiveRigidBodyFrame
+    # This will create a new NatNet client
+    streamingClient = NatNetClient(args.host)
 
-# Start up the streaming client now that the callbacks are set up.
-# This will run perpetually, and operate on a separate thread.
-streamingClient.run()
+    # Configure the streaming client to call our rigid body handler on the emulator to send data out.
+    streamingClient.newFrameListener = receiveNewFrame
+    streamingClient.rigidBodyListener = receiveRigidBodyFrame
+
+    # Start up the streaming client now that the callbacks are set up.
+    # This will run perpetually, and operate on a separate thread.
+    streamingClient.run()
