@@ -28,12 +28,12 @@ FloatValue = struct.Struct( '<f' )
 DoubleValue = struct.Struct( '<d' )
 
 class NatNetClient:
-    def __init__( self ):
+    def __init__( self, host ):
         # Change this value to the IP address of the NatNet server.
-        self.serverIPAddress = "172.24.71.201"
+        self.serverIPAddress = host
 
         # Change this value to the IP address of your local network interface
-        self.localIPAddress = "172.24.71.201"
+        self.localIPAddress = host
 
         # This should match the multicast address listed in Motive's streaming settings.
         self.multicastAddress = "239.255.42.99"
