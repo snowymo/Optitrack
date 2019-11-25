@@ -33,9 +33,13 @@ class NatNetClient:
         self.serverIPAddress = host
 
         # Change this value to the IP address of your local network interface
-        hostname = socket.gethostname()
-        IPAddr = socket.gethostbyname(hostname)
-        self.localIPAddress = IPAddr
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        print("check if " + ip)
+        s.close()
+
+        self.localIPAddress = ip
 
         # This should match the multicast address listed in Motive's streaming settings.
         self.multicastAddress = "239.255.42.99"
