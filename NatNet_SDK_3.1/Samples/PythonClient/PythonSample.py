@@ -21,6 +21,10 @@ import argparse
 import time
 from NatNetClient import NatNetClient
 import numpy as np
+import json
+from datetime import datetime
+from udpclient import *
+import random
 
 outputfile = None
 data = []
@@ -42,17 +46,48 @@ def receiveRigidBodyFrame(id, position, rotation):
             item.append(position[i])
         for i in range(len(rotation)):
             item.append(rotation[i])
+        # if id == 11:
         data.append(item)
-        print(item)
+        # print("receiveRigidBodyFrame:" + str(id) + "\t" + str(item))
+
+    # send out to udpHandler
+    payload = {
+        "type": "optitrack",
+        "data":{
+            "timestamp": datetime.now().timestamp(),
+            "rigidbody":{
+                "foot":{
+                    "left":{
+                        "pos": position,
+                        "rot":rotation
+                    },
+                    "right":{
+                        "pos": [random.random(), random.random()+1, random.random()],
+                        "rot":[1,0,0,0]
+                    }
+                }
+            }
+        }
+    }
+    if udp_sender:
+        udp_sender.send(json.dumps(payload))
     return
+
+udp_sender = None
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', type=str, default="172.24.71.201", help='host to connect to')
     parser.add_argument('--file', help='write to file')
+    parser.add_argument('--udp', type=bool, default=False, help='send out or not')
+    parser.add_argument('--udphost', type=str, default="127.0.0.1", help='send to ip')
+    parser.add_argument('--udpport', type=int, default=11111, help='send to ip')
 
     args = parser.parse_args()
     outputfile = args.file
+
+    if args.udp:
+        udp_sender = PythonSocketClient(args.udphost, args.udpport)
 
     # This will create a new NatNet client
     streamingClient = NatNetClient(args.host)
@@ -65,9 +100,15 @@ if __name__ == "__main__":
     # This will run perpetually, and operate on a separate thread.
     streamingClient.run()
 
+    # curlen = 0
+    # while True:
+    #     if curlen == len(data):
+    #         break
+    #     curlen = len(data)
+    #     time.sleep(2)
+
     to_stop = input("Enter to enter")
     if args.file is not None:
         print(np.asarray(data).shape)
         np.savetxt(args.file + ".csv", np.asarray(data))
         exit()
-
