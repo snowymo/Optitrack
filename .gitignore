@@ -1,4 +1,4 @@
 NatNet_SDK_3.1/Samples/.vs/
 NatNet_SDK_3.1/Samples/PythonClient/.idea/
-NatNet_SDK_3.1/Samples/PythonClient/__pycache__
+NatNet_SDK_3.1/Samples/*/obj/
 *.csv

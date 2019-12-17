@@ -38,7 +38,7 @@ def receiveNewFrame(frameNumber, markerSetCount, unlabeledMarkersCount, rigidBod
 
 # This is a callback function that gets connected to the NatNet client. It is called once per rigid body per frame
 def receiveRigidBodyFrame(id, position, rotation):
-    #print("Received frame for rigid body " + str(id) + " " + str(position) + " " + str(rotation))
+    # print("Received frame for rigid body " + str(id) + " " + str(position) + " " + str(rotation))
     if outputfile != None:
         ts = time.time()
         item = [ts]
@@ -55,6 +55,9 @@ def receiveRigidBodyFrame(id, position, rotation):
         "type": "optitrack",
         "data":{
             "timestamp": datetime.now().timestamp(),
+            "id": id,
+            "pos": position,
+            "rot": rotation,
             "rigidbody":{
                 "foot":{
                     "left":{
